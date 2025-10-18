@@ -1,0 +1,666 @@
+<!DOCTYPE html>
+<html lang="vi">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Phương pháp đề xuất - Titanic Survival Prediction</title>
+    <style>
+      * {
+        margin: 0;
+        padding: 0;
+        box-sizing: border-box;
+      }
+
+      body {
+        font-family: "Segoe UI", Tahoma, Geneva, Verdana, sans-serif;
+        background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+        min-height: 100vh;
+        padding: 20px;
+      }
+
+      .container {
+        max-width: 1400px;
+        margin: 0 auto;
+        background: white;
+        border-radius: 25px;
+        box-shadow: 0 25px 50px rgba(0, 0, 0, 0.15);
+        overflow: hidden;
+      }
+
+      .header {
+        background: linear-gradient(135deg, #2c3e50, #34495e);
+        color: white;
+        padding: 40px;
+        text-align: center;
+      }
+
+      .header h1 {
+        font-size: 3em;
+        margin-bottom: 10px;
+        text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.3);
+      }
+
+      .header p {
+        font-size: 1.2em;
+        opacity: 0.9;
+      }
+
+      .main-content {
+        padding: 40px;
+      }
+
+      .methodology-section {
+        margin-bottom: 50px;
+      }
+
+      .section-title {
+        font-size: 2.2em;
+        color: #2c3e50;
+        margin-bottom: 30px;
+        text-align: center;
+        position: relative;
+      }
+
+      .section-title::after {
+        content: "";
+        position: absolute;
+        bottom: -10px;
+        left: 50%;
+        transform: translateX(-50%);
+        width: 100px;
+        height: 4px;
+        background: linear-gradient(45deg, #e74c3c, #c0392b);
+        border-radius: 2px;
+      }
+
+      .method-grid {
+        display: grid;
+        grid-template-columns: repeat(auto-fit, minmax(400px, 1fr));
+        gap: 30px;
+        margin-top: 40px;
+      }
+
+      .method-card {
+        background: white;
+        border-radius: 20px;
+        padding: 30px;
+        box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1);
+        border-left: 8px solid;
+        transition: all 0.3s ease;
+        position: relative;
+        overflow: hidden;
+      }
+
+      .method-card::before {
+        content: "";
+        position: absolute;
+        top: 0;
+        left: 0;
+        right: 0;
+        height: 4px;
+        background: linear-gradient(45deg, #74b9ff, #0984e3);
+      }
+
+      .method-card:hover {
+        transform: translateY(-8px);
+        box-shadow: 0 20px 40px rgba(0, 0, 0, 0.15);
+      }
+
+      .method-card.data-exploration {
+        border-left-color: #00b894;
+        background: linear-gradient(135deg, #d1f2eb, #a7f3d0);
+      }
+
+      .method-card.feature-engineering {
+        border-left-color: #6c5ce7;
+        background: linear-gradient(135deg, #e8e4ff, #d1c7ff);
+      }
+
+      .method-card.preprocessing {
+        border-left-color: #fdcb6e;
+        background: linear-gradient(135deg, #fff8e1, #ffecb3);
+      }
+
+      .method-card.modeling {
+        border-left-color: #fd79a8;
+        background: linear-gradient(135deg, #fce4ec, #f8bbd9);
+      }
+
+      .method-card.evaluation {
+        border-left-color: #a29bfe;
+        background: linear-gradient(135deg, #f3e5f5, #e1bee7);
+      }
+
+      .method-card h3 {
+        font-size: 1.6em;
+        margin-bottom: 20px;
+        color: #2c3e50;
+        display: flex;
+        align-items: center;
+        gap: 15px;
+      }
+
+      .method-icon {
+        font-size: 2em;
+      }
+
+      .method-description {
+        font-size: 1.1em;
+        color: #2c3e50;
+        margin-bottom: 20px;
+        line-height: 1.6;
+      }
+
+      .method-steps {
+        list-style: none;
+        padding: 0;
+      }
+
+      .method-steps li {
+        background: rgba(255, 255, 255, 0.9);
+        margin: 12px 0;
+        padding: 15px 20px;
+        border-radius: 25px;
+        font-size: 1em;
+        color: #2c3e50;
+        box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
+        transition: all 0.3s ease;
+        position: relative;
+        overflow: hidden;
+      }
+
+      .method-steps li::before {
+        content: "✓";
+        color: #00b894;
+        font-weight: bold;
+        margin-right: 12px;
+        font-size: 1.2em;
+      }
+
+      .method-steps li:hover {
+        transform: translateX(10px);
+        background: rgba(255, 255, 255, 1);
+      }
+
+      .code-example {
+        background: #2c3e50;
+        color: #ecf0f1;
+        padding: 20px;
+        border-radius: 15px;
+        margin: 20px 0;
+        font-family: "Courier New", monospace;
+        font-size: 0.9em;
+        overflow-x: auto;
+        border-left: 4px solid #e74c3c;
+      }
+
+      .highlight {
+        background: linear-gradient(135deg, #ffeaa7, #fdcb6e);
+        padding: 3px 8px;
+        border-radius: 5px;
+        font-weight: bold;
+        color: #2d3436;
+      }
+
+      .pipeline-section {
+        background: linear-gradient(135deg, #f8f9fa, #e9ecef);
+        padding: 40px;
+        border-radius: 20px;
+        margin: 40px 0;
+      }
+
+      .pipeline-flow {
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        flex-wrap: wrap;
+        gap: 20px;
+        margin: 30px 0;
+      }
+
+      .pipeline-step {
+        background: linear-gradient(135deg, #74b9ff, #0984e3);
+        color: white;
+        padding: 20px 30px;
+        border-radius: 50px;
+        font-weight: bold;
+        font-size: 1.1em;
+        box-shadow: 0 8px 25px rgba(116, 185, 255, 0.3);
+        position: relative;
+        min-width: 150px;
+        text-align: center;
+      }
+
+      .pipeline-step::after {
+        content: "→";
+        position: absolute;
+        right: -30px;
+        top: 50%;
+        transform: translateY(-50%);
+        font-size: 1.5em;
+        color: #74b9ff;
+      }
+
+      .pipeline-step:last-child::after {
+        display: none;
+      }
+
+      .stats-section {
+        background: linear-gradient(135deg, #667eea, #764ba2);
+        color: white;
+        padding: 40px;
+        border-radius: 20px;
+        margin: 40px 0;
+      }
+
+      .stats-grid {
+        display: grid;
+        grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+        gap: 25px;
+        margin-top: 30px;
+      }
+
+      .stat-card {
+        background: rgba(255, 255, 255, 0.1);
+        padding: 25px;
+        border-radius: 15px;
+        text-align: center;
+        backdrop-filter: blur(10px);
+        border: 1px solid rgba(255, 255, 255, 0.2);
+      }
+
+      .stat-number {
+        font-size: 2.5em;
+        font-weight: bold;
+        margin-bottom: 10px;
+      }
+
+      .stat-label {
+        font-size: 1.1em;
+        opacity: 0.9;
+      }
+
+      .key-features {
+        background: linear-gradient(135deg, #ffeaa7, #fdcb6e);
+        padding: 30px;
+        border-radius: 20px;
+        margin-top: 30px;
+        border-left: 8px solid #fdcb6e;
+      }
+
+      .key-features h3 {
+        color: #2d3436;
+        font-size: 1.8em;
+        margin-bottom: 20px;
+      }
+
+      .features-list {
+        list-style: none;
+        padding: 0;
+      }
+
+      .features-list li {
+        background: rgba(255, 255, 255, 0.8);
+        margin: 15px 0;
+        padding: 15px 20px;
+        border-radius: 15px;
+        font-size: 1.1em;
+        color: #2d3436;
+        box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
+      }
+
+      .features-list li::before {
+        content: "🎯";
+        margin-right: 12px;
+      }
+
+      .footer {
+        background: #2c3e50;
+        color: white;
+        padding: 30px;
+        text-align: center;
+      }
+
+      .footer p {
+        font-size: 1.1em;
+        opacity: 0.9;
+      }
+
+      @media (max-width: 768px) {
+        .method-grid {
+          grid-template-columns: 1fr;
+        }
+
+        .pipeline-flow {
+          flex-direction: column;
+        }
+
+        .pipeline-step::after {
+          content: "↓";
+          right: 50%;
+          top: 100%;
+          transform: translateX(50%);
+        }
+      }
+    </style>
+  </head>
+  <body>
+    <div class="container">
+      <div class="header">
+        <h1>🚢 Phương pháp đề xuất</h1>
+        <p>Titanic Survival Prediction - Hướng tiếp cận tối ưu</p>
+      </div>
+
+      <div class="main-content">
+        <div class="methodology-section">
+          <h2 class="section-title">Phương pháp luận tổng thể</h2>
+
+          <div class="method-grid">
+            <div class="method-card data-exploration">
+              <h3>
+                <span class="method-icon">🔍</span>1. Khảo sát dữ liệu (EDA)
+              </h3>
+              <div class="method-description">
+                Phân tích toàn diện dữ liệu để hiểu rõ đặc điểm, mối quan hệ và
+                vấn đề cần xử lý.
+              </div>
+              <ul class="method-steps">
+                <li>
+                  Kiểm tra missing values: Age (177), Cabin (687), Embarked (2)
+                </li>
+                <li>
+                  Phân tích tương quan: Fare vs Pclass (-0.55), Age vs Survived
+                </li>
+                <li>
+                  Phân phối dữ liệu: Right-skewed cho Fare, normal cho Age
+                </li>
+                <li>Class imbalance: 38.4% survived vs 61.6% not survived</li>
+                <li>Outliers detection: Fare có nhiều giá trị bất thường</li>
+                <li>Categorical analysis: Female survival rate > Male</li>
+              </ul>
+            </div>
+
+            <div class="method-card feature-engineering">
+              <h3><span class="method-icon">⚙️</span>2. Feature Engineering</h3>
+              <div class="method-description">
+                Tạo đặc trưng mới dựa trên hiểu biết domain và phân tích dữ
+                liệu.
+              </div>
+              <ul class="method-steps">
+                <li>
+                  <span class="highlight">Family_Size</span> = SibSp + Parch + 1
+                </li>
+                <li>
+                  <span class="highlight">IsAlone</span> = (Family_Size == 1)
+                </li>
+                <li>
+                  <span class="highlight">Title</span> từ Name (Mr, Mrs, Miss,
+                  Master, Rare)
+                </li>
+                <li>
+                  <span class="highlight">Deck</span> từ Cabin (A, B, C, D, E,
+                  F, G, Z)
+                </li>
+                <li>
+                  <span class="highlight">male_rich</span> = (Sex == 'male' &
+                  Fare > 50)
+                </li>
+                <li>
+                  <span class="highlight">Woman_child</span> = (Sex == 'female'
+                  | Title == 'Master')
+                </li>
+                <li>
+                  <span class="highlight">Ticket_freq</span> = số người dùng
+                  cùng vé
+                </li>
+                <li>
+                  <span class="highlight">Fare_per_person</span> = Fare /
+                  Ticket_freq
+                </li>
+              </ul>
+
+              <div class="code-example">
+                # Ví dụ Feature Engineering def extract_title(name): match =
+                re.search(r' ([A-Za-z]+)\.', name) return match.group(1) if
+                match else "Unknown" X['Title'] = X['Name'].apply(extract_title)
+                X['Family_Size'] = X['SibSp'] + X['Parch'] + 1 X['IsAlone'] =
+                (X['Family_Size'] == 1).astype(int)
+              </div>
+            </div>
+
+            <div class="method-card preprocessing">
+              <h3><span class="method-icon">🛠️</span>3. Tiền xử lý dữ liệu</h3>
+              <div class="method-description">
+                Xử lý missing values, mã hóa và chuẩn hóa dữ liệu cho mô hình.
+              </div>
+              <ul class="method-steps">
+                <li>
+                  <span class="highlight">Age</span>: Median imputation theo
+                  Pclass × Sex
+                </li>
+                <li>
+                  <span class="highlight">Cabin</span>: Fill 'Z' cho missing
+                  values
+                </li>
+                <li>
+                  <span class="highlight">Embarked</span>: Most frequent hoặc
+                  domain knowledge
+                </li>
+                <li>
+                  <span class="highlight">Sex</span>: OrdinalEncoder (male=1,
+                  female=0)
+                </li>
+                <li>
+                  <span class="highlight">Title</span>: OrdinalEncoder với
+                  handle_unknown=-1
+                </li>
+                <li><span class="highlight">Deck</span>: OrdinalEncoder</li>
+                <li>
+                  <span class="highlight">Feature Selection</span>:
+                  SelectKBest(k=10)
+                </li>
+              </ul>
+
+              <div class="code-example">
+                # Pipeline preprocessing numeric_transformer = Pipeline([
+                ('impute', SimpleImputer(strategy='median')) ])
+                categorical_transformer = Pipeline([ ('imputer',
+                SimpleImputer(strategy='most_frequent')), ('encoder',
+                OrdinalEncoder(handle_unknown="use_encoded_value",
+                unknown_value=-1)) ])
+              </div>
+            </div>
+
+            <div class="method-card modeling">
+              <h3><span class="method-icon">🤖</span>4. Mô hình hóa</h3>
+              <div class="method-description">
+                Huấn luyện và tối ưu hóa nhiều mô hình machine learning.
+              </div>
+              <ul class="method-steps">
+                <li>
+                  <span class="highlight">Random Forest</span>: n_estimators
+                  50-500, max_depth 1-9
+                </li>
+                <li>
+                  <span class="highlight">XGBoost</span>: learning_rate
+                  0.01-0.1, max_depth 3-9
+                </li>
+                <li>
+                  <span class="highlight">SVM</span>: C 0.1-10, kernel
+                  linear/rbf
+                </li>
+                <li>
+                  <span class="highlight">LightGBM</span>: n_estimators 50-300,
+                  learning_rate 0.01-0.1
+                </li>
+                <li>
+                  <span class="highlight">Decision Tree</span>: criterion
+                  gini/entropy, max_depth None-10
+                </li>
+                <li>
+                  <span class="highlight">Ensemble</span>: VotingClassifier với
+                  soft voting
+                </li>
+                <li>
+                  <span class="highlight">GridSearchCV</span>: Tối ưu
+                  hyperparameters
+                </li>
+              </ul>
+
+              <div class="code-example">
+                # GridSearchCV setup param_grid = [ { "model":
+                [RandomForestClassifier(random_state=21)],
+                "model__n_estimators": [50, 100, 200, 300, 400, 500],
+                "model__max_depth": [1, 3, 5, 7, 9] }, { "model":
+                [XGBClassifier(use_label_encoder=False, eval_metric='logloss')],
+                "model__n_estimators": [50, 100, 200, 300, 400, 500],
+                "model__learning_rate": [0.01, 0.05, 0.1], "model__max_depth":
+                [1, 3, 5, 7, 9] } ]
+              </div>
+            </div>
+
+            <div class="method-card evaluation">
+              <h3>
+                <span class="method-icon">📊</span>5. Đánh giá & Validation
+              </h3>
+              <div class="method-description">
+                Đánh giá hiệu suất mô hình và đảm bảo tính tổng quát hóa.
+              </div>
+              <ul class="method-steps">
+                <li>
+                  <span class="highlight">Stratified K-Fold</span>: CV với k=10,
+                  shuffle=True
+                </li>
+                <li>
+                  <span class="highlight">Multiple Metrics</span>: accuracy, f1,
+                  roc_auc
+                </li>
+                <li>
+                  <span class="highlight">Feature Importance</span>: Phân tích
+                  đặc trưng quan trọng
+                </li>
+                <li>
+                  <span class="highlight">ROC Curve</span>: AUC score analysis
+                </li>
+                <li>
+                  <span class="highlight">Confusion Matrix</span>: Precision,
+                  Recall, F1
+                </li>
+                <li>
+                  <span class="highlight">OOB Score</span>: Out-of-bag score cho
+                  Random Forest
+                </li>
+                <li>
+                  <span class="highlight">Cross-validation</span>: Stability
+                  analysis
+                </li>
+              </ul>
+            </div>
+          </div>
+        </div>
+
+        <div class="pipeline-section">
+          <h2 class="section-title">Pipeline xử lý dữ liệu</h2>
+          <div class="pipeline-flow">
+            <div class="pipeline-step">
+              Raw Data<br /><small>(891×12)</small>
+            </div>
+            <div class="pipeline-step">
+              Feature Engineering<br /><small>(Tạo 8 đặc trưng mới)</small>
+            </div>
+            <div class="pipeline-step">
+              Data Cleaning<br /><small>(Xử lý missing)</small>
+            </div>
+            <div class="pipeline-step">
+              Encoding<br /><small>(Categorical → Numeric)</small>
+            </div>
+            <div class="pipeline-step">
+              Feature Selection<br /><small>(SelectKBest k=10)</small>
+            </div>
+            <div class="pipeline-step">
+              Model Training<br /><small>(GridSearchCV)</small>
+            </div>
+            <div class="pipeline-step">
+              Prediction<br /><small>(Final Output)</small>
+            </div>
+          </div>
+        </div>
+
+        <div class="stats-section">
+          <h2 class="section-title" style="color: white">Thống kê hiệu suất</h2>
+          <div class="stats-grid">
+            <div class="stat-card">
+              <div class="stat-number">0.837</div>
+              <div class="stat-label">Best Accuracy Score</div>
+            </div>
+            <div class="stat-card">
+              <div class="stat-number">10</div>
+              <div class="stat-label">K-Fold Cross Validation</div>
+            </div>
+            <div class="stat-card">
+              <div class="stat-number">654</div>
+              <div class="stat-label">Parameter Combinations</div>
+            </div>
+            <div class="stat-card">
+              <div class="stat-number">5</div>
+              <div class="stat-label">Model Types Tested</div>
+            </div>
+            <div class="stat-card">
+              <div class="stat-number">10</div>
+              <div class="stat-label">Final Features Selected</div>
+            </div>
+            <div class="stat-card">
+              <div class="stat-number">2-3</div>
+              <div class="stat-label">Processing Time (minutes)</div>
+            </div>
+          </div>
+        </div>
+
+        <div class="key-features">
+          <h3>🎯 Điểm mạnh của phương pháp</h3>
+          <ul class="features-list">
+            <li>
+              <strong>Domain Knowledge Integration:</strong> Kết hợp hiểu biết
+              lịch sử với phân tích dữ liệu
+            </li>
+            <li>
+              <strong>Robust Feature Engineering:</strong> Tạo đặc trưng có ý
+              nghĩa từ dữ liệu gốc
+            </li>
+            <li>
+              <strong>Comprehensive Preprocessing:</strong> Xử lý missing values
+              thông minh theo ngữ cảnh
+            </li>
+            <li>
+              <strong>Multiple Model Approach:</strong> So sánh và kết hợp nhiều
+              thuật toán
+            </li>
+            <li>
+              <strong>Rigorous Validation:</strong> K-Fold CV đảm bảo tính tổng
+              quát hóa
+            </li>
+            <li>
+              <strong>Feature Selection:</strong> Chọn lọc đặc trưng quan trọng
+              nhất
+            </li>
+            <li>
+              <strong>Ensemble Methods:</strong> VotingClassifier cải thiện độ
+              chính xác
+            </li>
+            <li>
+              <strong>Interpretable Results:</strong> Feature importance giúp
+              hiểu mô hình
+            </li>
+          </ul>
+        </div>
+      </div>
+
+      <div class="footer">
+        <p>
+          🚀 Phương pháp đề xuất: Kết hợp domain knowledge với data-driven
+          approach để đạt hiệu suất tối ưu
+        </p>
+      </div>
+    </div>
+  </body>
+</html>
